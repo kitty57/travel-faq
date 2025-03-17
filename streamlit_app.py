@@ -6,14 +6,27 @@ import torch
 st.title("🌍 TravelBot - Your Travel Assistant")
 st.write("Ask me anything about travel destinations, visas, or the best time to visit!")
 
-# Load the model and tokenizer from Hugging Face Hub
+# Your Hugging Face API key
+HF_API_KEY = "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"  # Replace with your actual API key
+
+# Load the model and tokenizer from Hugging Face with API key
 @st.cache_resource  # Cache the model and tokenizer for faster reloads
 def load_model():
     model_name = "kitty528/travelbot"  # Replace with your model's name
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16).to("cuda")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name, 
+        torch_dtype=torch.float16, 
+        use_auth_token=HF_API_KEY  # Use API key for authentication
+    ).to("cuda")
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name, 
+        use_auth_token=HF_API_KEY
+    )
+
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+
     return model, tokenizer
 
 model, tokenizer = load_model()
